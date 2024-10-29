@@ -1,0 +1,12 @@
+1. run server.js
+2. open postman
+3. select post option near url field
+4. go to body, select raw and json as request sender
+	{
+  "name": "John Doe",
+  "event": "Certificate of Excellence",
+  "date": "2024-09-30"
+}
+5. send it
+6. check the certificates folder in the same directory as the project file
+7. the certificates can be found there

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="date"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #message {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Certificate Generator</h1>
+        <form id="certificateForm">
+            <input type="text" id="name" placeholder="Enter your name" required>
+            <input type="text" id="event" placeholder="Enter the event name" required>
+            <input type="date" id="date" required>
+            <button type="submit">Generate Certificate</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('certificateForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const event = document.getElementById('event').value;
+            const date = document.getElementById('date').value;
+
+            // Send POST request with name, event, and date
+            const response = await fetch('http://localhost:3000/generate-certificate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, event, date }),
+            });
+
+            // If the response is OK, trigger file download
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${name}-certificate.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                messageDiv.innerHTML = `<p style="color: green;">Certificate generated and downloading...</p>`;
+            } else {
+                messageDiv.innerHTML = `<p style="color: red;">Error generating certificate.</p>`;
+            }
+        });
+    </script>
+
+</body>
+</html>
