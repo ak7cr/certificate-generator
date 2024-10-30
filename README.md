@@ -6,5 +6,4 @@ Technologies Used:
 - Node.js
 - Express.js
 - MongoDB
-- Mongoose
 - pdf-lib 
